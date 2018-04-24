@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>One Piece Hangman</title>
+  <title>One Piece Hangman</title>
+  <meta charset="UTF-8">
 	<style>
     body {
       font-family: Arial, Helvetica, sans-serif;
@@ -30,7 +31,7 @@
       max-width: 900px;
       margin: auto;
       border: 2px solid #000000;
-      background-color: rgb(255,255,255,0.3);
+      background-color: rgba(255,255,255,0.3);
       border-radius: 20px;
     }
 
@@ -60,7 +61,7 @@
     }
 
     #answer {
-      background-color: rgb(255,255,255,0.6);
+      background-color: rgba(255,255,255,0.6);
       border-radius: 20px;
       position: fixed;
       z-index: 101;
@@ -93,13 +94,12 @@
     }
   </style>
 	<link rel="shortcut icon" type="image/x-icon" href="icon.png">
-	<meta name="viewport" content="width=device-width, user-scalable=no" />
 </head>
 <body>
 	<div id="answer">
-		<h1 id="response"></h1>
+		<p id="response"></p>
 		<div id="character"></div>
-		<h1 id="anykey"></h1>
+		<p id="anykey"></p>
 	</div>
 
 	<div id="container">
@@ -136,7 +136,7 @@
 
 	<div id="footer">
 		&copy; Zena Vilenia 2018
-	</footer>
+  </div>
   <script>
     let words = ["MONKEY D LUFFY", "RORONOA ZORO", "VINSMOKE SANJI", "USOPP", "NAMI",
             "TONY TONY CHOPPER", "BROOK", "FRANKY", "NICO ROBIN"];
