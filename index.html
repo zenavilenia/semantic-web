@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>One Piece Hangman</title>
+	<style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: url(./assets/images/background.jpg) no-repeat center center fixed;
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+    }
+
+    p {
+      font-weight: bold;
+      font-size: 22px;
+    }
+
+    #header {
+      text-align: center;
+    }
+
+    #current-word {
+      text-align: center;
+    }
+
+    #container {
+      height: auto;
+      max-width: 900px;
+      margin: auto;
+      border: 2px solid #000000;
+      background-color: rgb(255,255,255,0.3);
+      border-radius: 20px;
+    }
+
+    #info {
+      float: left;
+      position: relative;
+      width: 50%;
+      text-align: center;
+    }
+
+    #hangman {
+      float: left;
+      position: relative;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: contain;
+      min-height: 300px;
+      width: 50%;
+    }
+
+    #imgHangman {
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+      min-height: 150px;
+      width: 50%;
+    }
+
+    #answer {
+      background-color: rgb(255,255,255,0.6);
+      border-radius: 20px;
+      position: fixed;
+      z-index: 101;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    #response {
+      text-align: center;
+    }
+
+    #anykey {
+      text-align: center;
+    }
+
+    #imgShow {
+      height: 200px;
+      width: 150px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    #clear {
+      clear: both;
+    }
+
+    #footer {
+      text-align: center;
+    }
+  </style>
+	<link rel="shortcut icon" type="image/x-icon" href="icon.png">
+	<meta name="viewport" content="width=device-width, user-scalable=no" />
+</head>
+<body>
+	<div id="answer">
+		<h1 id="response"></h1>
+		<div id="character"></div>
+		<h1 id="anykey"></h1>
+	</div>
+
+	<div id="container">
+		<div id="header">
+			<h1>One Piece Hangman</h1>
+		</div> <!-- end #header -->
+
+		<div id="current-word">
+			<h2>Guess the word:</h2>
+			<p id="wordToGuess"></p>
+		</div>
+
+		<div id="info">
+			<div id="wins-count">
+				<h2>Wins:</h2>
+				<p id="wins">0</p>
+			</div>
+
+			<div id="guess-left">
+				<h2>Guess left:</h2>
+				<p id="guess">5</p>
+			</div>
+
+			<div id="wrong-guess-count">
+				<h2>Wrong Guess:</h2>
+				<p id="wrong-guess"></p>
+			</div>
+		</div> <!-- end #info -->
+
+		<div id="hangman"></div>
+
+		<div id="clear"></div>
+	</div> <!-- end #container -->
+
+	<div id="footer">
+		&copy; Zena Vilenia 2018
+	</footer>
+  <script>
+    let words = ["MONKEY D LUFFY", "RORONOA ZORO", "VINSMOKE SANJI", "USOPP", "NAMI",
+            "TONY TONY CHOPPER", "BROOK", "FRANKY", "NICO ROBIN"];
+    let word;
+    let indexWord = -1;
+    let wordTmp = [];
+    let alphabet = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P",
+                    "Q","R","S","T","U","V","W","X","Y","Z"];
+    let guessLeft = 5;
+    let guessedWord = [];
+    let wins = 0;
+
+    let showGuessLeft = document.getElementById("guess");
+    let showWrongGuess = document.getElementById("wrong-guess");
+    let showWins = document.getElementById("wins");
+    let showWordtoGuess = document.getElementById("wordToGuess");
+    let showAnswer = document.getElementById("answer");
+    let showResponse = document.getElementById("response");
+    let showCharacter = document.getElementById("character");
+    let showAnyKey = document.getElementById("anykey");
+    let showHangman = document.getElementById("hangman");
+
+    window.onload = function() {
+      selectNewWord();
+    }
+
+    window.addEventListener("keydown", function (event) {
+      if(showResponse.innerHTML !== "")  {
+        selectNewWord();
+      } else {
+        let key = event.key.toUpperCase();
+        if(alphabet.indexOf(key) !== -1) {
+          if(word.indexOf(key) !== -1) {
+            changeWord(key);
+          } else {
+            if(guessedWord.indexOf(key) === -1) {
+              wrongGuest(key);
+              changeGuessLeft();
+            }
+          }
+        }
+      }
+    });
+
+    function selectNewWord() {
+      wordTmp = [];
+      guessedWord = [];
+      guessLeft = 5;
+      showAnyKey.innerHTML = "";
+      showResponse.innerHTML = "";
+      showAnswer.style.border = "";
+      showCharacter.innerHTML = "";
+      showGuessLeft.innerHTML = guessLeft;
+      showWrongGuess.innerHTML = guessedWord;
+      showHangman.innerHTML = '<img src="assets/images/hangman' + guessLeft + '.png" id="imgHangman">';
+      let randomItem = words[Math.floor(Math.random()*words.length)];
+      indexWord = words.indexOf(randomItem);
+      word = words[indexWord].split("");
+
+      for(let i in word) {
+        if(word[i] === " ") {
+          wordTmp.push("&nbsp;");
+        } else {
+          wordTmp.push("_");
+        }
+      }
+      showWordtoGuess.innerHTML = wordTmp.join(" ");
+    }
+
+    function changeWord(key) {
+      for(let i in word) {
+        if(word[i] === key) {
+          wordTmp.splice(i, 1, word[i]);
+        }
+      }
+      document.getElementById("wordToGuess").innerHTML = wordTmp.join(" ");
+      if(wordTmp.indexOf("_") === -1) {
+        win();
+      }
+    }
+
+    function changeGuessLeft() {
+      guessLeft--;
+      showGuessLeft.innerHTML = guessLeft;
+      showHangman.innerHTML = '<img src="assets/images/hangman' + guessLeft + '.png" id="imgHangman">';
+      if(guessLeft === 0) {
+        lose();
+      }
+    }
+
+    function lose() {
+      showAnswer.style.border = "2px solid #000000";
+      showResponse.innerHTML = "You Wrong :( its " + words[indexWord].toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+      showCharacter.innerHTML = '<img src="assets/images/' + indexWord + '.png" id="imgShow">'
+      showAnyKey.innerHTML = "Press any key to continue";
+    }
+
+    function win() {
+      wins++;
+      showWins.innerHTML = wins;
+      showAnswer.style.border = "2px solid #000000";
+      showResponse.innerHTML = "Correct! its " + words[indexWord].toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+      showCharacter.innerHTML = '<img src="assets/images/' + indexWord + '.png" id="imgShow">'
+      showAnyKey.innerHTML = "Press any key to continue";
+    }
+
+    function wrongGuest(key) {
+      guessedWord.push(key);
+      showWrongGuess.innerHTML = guessedWord.join(" ");
+    }
+  </script>
+</body>
+</html>
